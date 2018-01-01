@@ -1,0 +1,62 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="personnelInfoForm">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="userName" name="姓名" underline="true"/>
+                            <#select id="sex" name="性别" underline="true">
+                                <option value="1">男</option>
+                                <option value="2">女</option>
+                            </#select>
+                            <#input id="age" name="年龄" underline="true"/>
+                            <#input id="birthday" name="出生日期" underline="true" type="date"
+                            clickFun="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+                            <#input id="ethnicity" name="民族" underline="true"/>
+                            <#input id="nationality" name="国籍" underline="true"/>
+                            <#input id="education" name="受教育程度" underline="true"/>
+                            <#input id="political" name="政治面貌" underline="true"/>
+                            <#input id="householdType" name="户籍类别" underline="true"/>
+                            <#select id="marriage" name="婚姻状况" underline="true">
+                                <option value="0">未婚</option>
+                                <option value="1">已婚</option>
+                                <option value="2">再婚</option>
+                                <option value="3">离异</option>
+                                <option value="4">丧偶</option>
+                            </#select>
+                            <#input id="idCard" name="身份证号" underline="true"/>
+                            <#input id="phone" name="手机号" underline="true"/>
+                            <#input id="email" name="E-mail" type="email"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="company" name="就职公司" underline="true"/>
+                            <#input id="occupation" name="职业" underline="true"/>
+                            <#input id="province" name="省" underline="true"/>
+                            <#input id="city" name="市" underline="true"/>
+                            <#input id="county" name="区、县" underline="true"/>
+                            <#input id="address" name="地址信息" underline="true"/>
+                            <#input id="householder" name="是否户主" underline="true"/>
+                            <#input id="householderRel" name="与户主关系" underline="true"/>
+                            <#input id="srcProvince" name="户籍省" underline="true"/>
+                            <#input id="srcCity" name="户籍城市" underline="true"/>
+                            <#input id="srcCounty" name="户籍区县" underline="true"/>
+                            <#input id="srcAddress" name="户籍地址" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="PersonnelInfoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PersonnelInfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/personnel/personnelInfo/personnelInfo_info.js"></script>
+@}
