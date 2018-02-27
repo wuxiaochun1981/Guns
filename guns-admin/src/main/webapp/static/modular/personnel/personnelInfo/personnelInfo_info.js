@@ -142,4 +142,8 @@ $(function() {
     Feng.initValidator("personnelInfoForm", PersonnelInfoInfoDlg.validateFields);
     //初始化性别选项
     $("#sex").val($("#sexValue").val());
+
+    $('.js-example-basic-single').select2({
+        placeholder: 'Select an option'
+    });
 });

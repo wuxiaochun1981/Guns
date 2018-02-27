@@ -1,6 +1,5 @@
 package com.stylefeng.guns.modular.personnel.controller;
 
-import com.stylefeng.guns.GunsApplication;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
