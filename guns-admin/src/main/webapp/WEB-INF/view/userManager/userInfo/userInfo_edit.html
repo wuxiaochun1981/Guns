@@ -1,0 +1,38 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" name="id" value="${item.id}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="userName" name="用户名" value="${item.userName}" underline="true"/>
+                            <#input id="phone" name="手机号" value="${item.phone}" underline="true"/>
+                            <#input id="appid" name="应用id" value="${item.appid}" underline="true"/>
+                            <#input id="tokenKey" name="用户tokenkey" value="${item.tokenKey}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="accessCount" name="成功访问数量" value="${item.accessCount}" underline="true"/>
+                            <#input id="failCount" name="失败访问次数" value="${item.failCount}" underline="true"/>
+                            <#select id="status" name="状态" underline="true">
+                                <option value="0">正常</option>
+                                <option value="1">暂停</option>
+                                <option value="2">删除</option>
+                            </#select>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="UserInfoInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="UserInfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/userManager/userInfo/userInfo_info.js"></script>
+@}
