@@ -22,7 +22,9 @@ public enum BizExceptionEnum {
     /**
      * 其他
      */
-    AUTH_REQUEST_ERROR(400, "账号密码错误");
+    AUTH_REQUEST_ERROR(400, "appid或userKey错误");
+
+
 
     BizExceptionEnum(int code, String message) {
         this.friendlyCode = code;

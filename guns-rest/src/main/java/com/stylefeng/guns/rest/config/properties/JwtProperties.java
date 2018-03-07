@@ -17,6 +17,8 @@ public class JwtProperties {
 
     private String header = "Authorization";
 
+    private String tokenKey = "token";
+
     private String secret = "defaultSecret";
 
     private Long expiration = 604800L;
@@ -27,6 +29,10 @@ public class JwtProperties {
 
     public static String getJwtPrefix() {
         return JWT_PREFIX;
+    }
+
+    public String getTokenKey() {
+        return tokenKey;
     }
 
     public String getHeader() {

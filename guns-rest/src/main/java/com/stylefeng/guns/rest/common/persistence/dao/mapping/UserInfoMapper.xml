@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.rest.common.persistence.dao.UserInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.stylefeng.guns.rest.common.persistence.model.UserInfo">
+		<id column="id" property="id" />
+		<result column="user_name" property="userName" />
+		<result column="phone" property="phone" />
+		<result column="appid" property="appid" />
+		<result column="token" property="token" />
+		<result column="access_count" property="accessCount" />
+		<result column="fail_count" property="failCount" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_name AS userName, phone, appid, token, access_count AS accessCount, fail_count AS failCount, status, create_user AS createUser, create_time AS createTime
+    </sql>
+
+	<!-- 更新成功和失败次数 -->
+	<update id="updateQueryCount" parameterType="java.util.HashMap" >
+		UPDATE t_user_info SET
+		<if test=" accessCount != null ">
+			access_count = access_count + #{accessCount}
+		</if>
+		<if test=" failCount != null ">
+			fail_count = fail_count + #{failCount}
+		</if>
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test=" appid != null ">
+				and appid = #{appid}
+			</if>
+			<if test=" status != null ">
+				and status = #{status}
+			</if>
+		</trim>
+	</update>
+
+
+</mapper>

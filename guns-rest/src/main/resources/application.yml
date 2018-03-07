@@ -28,7 +28,7 @@ mybatis-plus:
 
 spring:
   datasource:
-      url: jdbc:mysql://127.0.0.1:3306/rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://127.0.0.1:3306/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
       username: root
       password: root
       filters: log4j,wall,mergeStat
@@ -38,3 +38,10 @@ logging:
   level.com.stylefeng: debug
   path: logs/
   file: guns-rest.log
+
+#连接服务器的信息
+cycredit:
+  server: http://api.uniccat.com
+  appKey:
+  appSecret:
+  defaultTimeOut: 10000

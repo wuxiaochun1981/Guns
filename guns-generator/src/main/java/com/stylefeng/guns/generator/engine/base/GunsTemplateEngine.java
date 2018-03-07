@@ -5,7 +5,7 @@ import com.sun.javafx.PlatformUtil;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
-import org.beetl.core.resource.ClasspathResourceLoader;
+import org.beetl.core.resource.FileResourceLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,7 +39,8 @@ public abstract class GunsTemplateEngine extends AbstractTemplateEngine {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader();
+//        ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader();
+        FileResourceLoader resourceLoader = new FileResourceLoader();
         groupTemplate = new GroupTemplate(resourceLoader, cfg);
         groupTemplate.registerFunctionPackage("tool", new ToolUtil());
     }

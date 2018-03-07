@@ -6,6 +6,7 @@ import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
 import io.jsonwebtoken.JwtException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,10 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;
-        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
-            authToken = requestHeader.substring(7);
-
+//        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+        if (StringUtils.isNotBlank(requestHeader)) {
+//            authToken = requestHeader.substring(7);
+            authToken = requestHeader;
             //验证token是否过期,包含了验证jwt是否正确
             try {
                 boolean flag = jwtTokenUtil.isTokenExpired(authToken);

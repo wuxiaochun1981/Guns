@@ -10,32 +10,33 @@ import com.stylefeng.guns.rest.modular.auth.validator.dto.Credence;
  */
 public class AuthRequest implements Credence {
 
-    private String userName;
-    private String password;
+    private String appid;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    private String userKey;
+
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAppid() {
+        return appid;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserKey() {
+        return userKey;
     }
 
     @Override
     public String getCredenceName() {
-        return this.userName;
+        return this.appid;
     }
 
     @Override
     public String getCredenceCode() {
-        return this.password;
+        return this.userKey;
     }
 }

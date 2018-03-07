@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.auth.controller;
 
 import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.rest.common.exception.BussinessException;
+import com.stylefeng.guns.rest.modular.api.service.IUserApiService;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthRequest;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthResponse;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
@@ -23,9 +24,12 @@ import javax.annotation.Resource;
 public class AuthController {
 
     @Autowired
+    private IUserApiService iUserApiService;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Resource(name = "simpleValidator")
+    @Resource(name = "dbValidator")
     private IReqValidator reqValidator;
 
     @RequestMapping(value = "${jwt.auth-path}")
@@ -35,7 +39,7 @@ public class AuthController {
 
         if (validate) {
             final String randomKey = jwtTokenUtil.getRandomKey();
-            final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
+            final String token = jwtTokenUtil.generateToken(authRequest.getAppid(), randomKey);
             return ResponseEntity.ok(new AuthResponse(token, randomKey));
         } else {
             throw new BussinessException(BizExceptionEnum.AUTH_REQUEST_ERROR);

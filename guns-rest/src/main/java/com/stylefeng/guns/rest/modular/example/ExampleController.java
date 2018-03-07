@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 常规控制器
@@ -20,5 +21,12 @@ public class ExampleController {
     public ResponseEntity hello(@RequestBody SimpleObject simpleObject) {
         System.out.println(simpleObject.getUser());
         return ResponseEntity.ok("请求成功!");
+    }
+
+    @RequestMapping("/w")
+    @ResponseBody
+    public String hello1(SimpleObject simpleObject) {
+        System.out.println(simpleObject.getUser());
+        return "ok";
     }
 }
