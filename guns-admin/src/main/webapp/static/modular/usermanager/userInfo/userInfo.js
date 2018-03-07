@@ -14,16 +14,28 @@ var UserInfo = {
 UserInfo.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '', field: 'id', visible: true, align: 'center', valign: 'middle'},
-            {title: '用户名', field: 'userName', visible: true, align: 'center', valign: 'middle'},
-            {title: '手机号', field: 'phone', visible: true, align: 'center', valign: 'middle'},
-            {title: '应用id', field: 'appid', visible: true, align: 'center', valign: 'middle'},
-            {title: '用户登录token', field: 'token', visible: true, align: 'center', valign: 'middle'},
-            {title: '成功访问数量', field: 'accessCount', visible: true, align: 'center', valign: 'middle'},
-            {title: '失败访问次数', field: 'failCount', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态 0 正常 1 暂停 2 删除', field: 'status', visible: true, align: 'center', valign: 'middle'},
-            {title: '创建人', field: 'createUser', visible: true, align: 'center', valign: 'middle'},
-            {title: '创建时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'}
+        {title: '编号', field: 'id', visible: true, align: 'center', valign: 'middle'},
+        {title: '用户名称', field: 'userName', visible: true, align: 'center', valign: 'middle'},
+        {title: '手机号', field: 'phone', visible: true, align: 'center', valign: 'middle'},
+        {title: '应用id', field: 'appid', visible: true, align: 'center', valign: 'middle'},
+        {title: '用户userKey', field: 'userKey', visible: true, align: 'center', valign: 'middle'},
+        {title: '成功访问数量', field: 'accessCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '失败访问次数', field: 'failCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',formatter: function (value, row, index) {
+            // var date = eval('new ' + eval(value).source)
+            // return date.format("yyyy年MM月dd日");
+            if(value==0){
+                return "正常";
+            }else if(value==1){
+                return "暂停";
+            }else if(value==2){
+                return "删除";
+            }
+            return "未知";
+        }
+        },
+        {title: '创建人', field: 'createUser', visible: true, align: 'center', valign: 'middle'},
+        {title: '创建时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

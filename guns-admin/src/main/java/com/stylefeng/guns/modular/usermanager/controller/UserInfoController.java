@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.usermanager.controller;
 
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.shiro.ShiroKit;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +12,9 @@ import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.modular.usermanager.service.IUserInfoService;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * 接口权限管理控制器
@@ -69,6 +73,11 @@ public class UserInfoController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(UserInfo userInfo) {
+        userInfo.setuserKey(UUID.randomUUID().toString());
+        userInfo.setCreateUser(ShiroKit.getUser().getAccount());
+        userInfo.setCreateTime(new Date());
+        userInfo.setAccessCount(0);
+        userInfo.setFailCount(0);
         userInfoService.insert(userInfo);
         return super.SUCCESS_TIP;
     }
@@ -79,7 +88,11 @@ public class UserInfoController extends BaseController {
     @RequestMapping(value = "/delete")
     @ResponseBody
     public Object delete(@RequestParam Integer userInfoId) {
-        userInfoService.deleteById(userInfoId);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(userInfoId);
+        userInfo.setStatus(2);
+        userInfoService.updateById(userInfo);
+//        userInfoService.deleteById(userInfoId);
         return SUCCESS_TIP;
     }
 

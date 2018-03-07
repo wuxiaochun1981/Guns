@@ -1,3 +1,35 @@
+
+
+/**
+ * 用户权限详情对话框（可用于添加和修改对话框）
+ */
+var UserInfoDlg = {
+    userInfoData: {},
+    validateFields: {
+        userName: {
+            validators: {
+                notEmpty: {
+                    message: '用户名称不能为空'
+                }
+            }
+        },
+        phone: {
+            validators: {
+                notEmpty: {
+                    message: '手机号不能为空'
+                }
+            }
+        },
+        appid: {
+            validators: {
+                notEmpty: {
+                    message: 'appid不能为空'
+                }
+            }
+        }
+    }
+};
+
 /**
  * 初始化接口权限管理详情对话框
  */
@@ -98,5 +130,7 @@ UserInfoInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-
+    Feng.initValidator("userInfoForm", UserInfoDlg.validateFields);
+    //初始化性别选项
+    $("#status").val($("#statusValue").val());
 });

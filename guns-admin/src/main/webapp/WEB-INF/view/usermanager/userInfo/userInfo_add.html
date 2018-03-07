@@ -1,25 +1,23 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal">
+        <div class="form-horizontal" id="userInfoForm">
 
             <input type="hidden" id="id" value="">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="" underline="true"/>
-                            <#input id="userName" name="用户名" underline="true"/>
-                            <#input id="phone" name="手机号" underline="true"/>
-                            <#input id="appid" name="应用id" underline="true"/>
-                            <#input id="token" name="用户登录token"/>
+                    <#input id="userName" name="用户名称" underline="true"/>
+                    <#input id="phone" name="手机号" underline="true"/>
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="accessCount" name="成功访问数量" underline="true"/>
-                            <#input id="failCount" name="失败访问次数" underline="true"/>
-                            <#input id="status" name="状态 0 正常 1 暂停 2 删除" underline="true"/>
-                            <#input id="createUser" name="创建人" underline="true"/>
-                            <#input id="createTime" name="创建时间" underline="true"/>
+                    <#input id="appid" name="应用id" underline="true"/>
+                    <#select id="status" name="状态" underline="true">
+                        <option value="0">正常</option>
+                        <option value="1">暂停</option>
+                        <option value="2">删除</option>
+                    </#select>
                 </div>
             </div>
 
