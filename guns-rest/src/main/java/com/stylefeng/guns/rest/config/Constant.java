@@ -6,10 +6,10 @@ package com.stylefeng.guns.rest.config;
  * <p>
  * Copyright: Copyright (c) 2018/3/5 13:46
  * <p>
- * Company: 京东
+ * Company:
  * <p>
  *
- * @author wuxiaochun@jd.com
+ * @author wuxiaochun
  * @version 1.0.0
  */
 public class Constant {

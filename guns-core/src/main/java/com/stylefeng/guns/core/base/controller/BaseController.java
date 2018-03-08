@@ -1,5 +1,6 @@
 package com.stylefeng.guns.core.base.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.base.tips.SuccessTip;
 import com.stylefeng.guns.core.base.warpper.BaseControllerWarpper;
@@ -111,5 +112,24 @@ public class BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", dfileName);
         return new ResponseEntity<byte[]>(fileBytes, headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * 生成返回消息
+     * @param code 编码
+     * @param msg 消息
+     * @param data 数据
+     * @return
+     */
+    protected JSONObject getResultInfo(Integer code,String msg,Object data) {
+        JSONObject result = new JSONObject();
+        result.put("code",code);
+        result.put("code",msg);
+        if(data==null){
+            result.put("data",new JSONObject());
+        }else{
+            result.put("data",data);
+        }
+        return result;
     }
 }

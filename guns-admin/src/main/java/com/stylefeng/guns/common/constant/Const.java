@@ -33,4 +33,16 @@ public interface Const {
      */
     String API_MENU_NAME = "接口文档";
 
+    /**
+     * 请求类型
+     */
+    public interface resultCode {
+        /** 成功 */
+        Integer ok = 0;
+        /** 错误 */
+        Integer error = -1;
+        /** 失败 */
+        Integer fail = 1;
+    }
+
 }

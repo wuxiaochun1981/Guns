@@ -1,5 +1,8 @@
 package com.stylefeng.guns.modular.usermanager.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.stylefeng.guns.common.constant.Const;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import org.springframework.stereotype.Controller;
@@ -14,12 +17,13 @@ import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.modular.usermanager.service.IUserInfoService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * 接口权限管理控制器
  *
- * @author fengshuonan
+ * @author wuxiaochun
  * @Date 2018-02-28 15:03:40
  */
 @Controller
@@ -64,7 +68,7 @@ public class UserInfoController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return userInfoService.selectList(null);
+        return userInfoService.selectList(new EntityWrapper<UserInfo>().ne("status",2));
     }
 
     /**
@@ -79,7 +83,7 @@ public class UserInfoController extends BaseController {
         userInfo.setAccessCount(0);
         userInfo.setFailCount(0);
         userInfoService.insert(userInfo);
-        return super.SUCCESS_TIP;
+        return SUCCESS_TIP;
     }
 
     /**
@@ -103,7 +107,7 @@ public class UserInfoController extends BaseController {
     @ResponseBody
     public Object update(UserInfo userInfo) {
         userInfoService.updateById(userInfo);
-        return super.SUCCESS_TIP;
+        return SUCCESS_TIP;
     }
 
     /**
@@ -113,5 +117,18 @@ public class UserInfoController extends BaseController {
     @ResponseBody
     public Object detail(@PathVariable("userInfoId") Integer userInfoId) {
         return userInfoService.selectById(userInfoId);
+    }
+    /**
+     * 验证appId是否重复
+     */
+    @RequestMapping(value = "/checkDuplicate")
+    @ResponseBody
+    public Object checkDuplicate(String appId){
+        List<UserInfo> list = userInfoService.selectList(new EntityWrapper<UserInfo>().eq("appid",appId).ne("status",2));
+        if(list != null && list.size()>0){
+            return getResultInfo(Const.resultCode.fail,"",list.get(0));
+        }else{
+            return getResultInfo(Const.resultCode.ok,"",null);
+        }
     }
 }

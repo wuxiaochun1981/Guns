@@ -3,6 +3,7 @@ package com.stylefeng.guns.rest.modular.api.controller;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
+import com.stylefeng.guns.rest.common.controller.BaseController;
 import com.stylefeng.guns.rest.config.Constant;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.api.service.IUserApiService;
@@ -37,7 +38,7 @@ import java.util.Objects;
  */
 @Controller
 @RequestMapping("/api/query")
-public class UserApiController {
+public class UserApiController extends BaseController {
 
     /** 日志 */
     private static final Log logger = LogFactory.getLog(UserApiController.class);
@@ -57,6 +58,8 @@ public class UserApiController {
         String  responseStr = "";
         try{
             String appId = getAppId(request);
+            String ip = getIpAddr(request);
+
             logger.info("个人查询: appId=" + appId + " idCode=" + idCode + " phoneNumber=" + phoneNumber + " realName=" + realName + " serviceType=" + serviceType + " timestamp=" + timestamp);
 
             if(StringUtils.isBlank(appId)){
@@ -70,7 +73,6 @@ public class UserApiController {
             }
             // 请求参数(client里面会自动加密,所以这里请使用明文)、
             Map<String, Object> params = new HashMap();
-            params.put("appId",appId);
             params.put("idCode",idCode);
             params.put("phoneNumber",phoneNumber);
             params.put("realName",realName);
@@ -78,6 +80,8 @@ public class UserApiController {
             params.put("timestamp",timestamp);
             //验证参数
             if(checkParams(params)){
+                params.put("appId",appId);
+                params.put("ip",ip);
                 JSONObject jsonObject = iUserApiService.person(params);
                 responseStr = jsonObject.toJSONString();
             }else{
@@ -97,6 +101,7 @@ public class UserApiController {
 
         try{
             String appId = getAppId(request);
+            String ip = getIpAddr(request);
             logger.info("个人查询: appId=" + appId + " entInfo=" + entInfo + " serviceType=" + serviceType + " timestamp=" + timestamp);
 
             if(StringUtils.isBlank(appId)){
@@ -110,12 +115,13 @@ public class UserApiController {
             }
             // 请求参数(client里面会自动加密,所以这里请使用明文)、
             Map<String, Object> params = new HashMap();
-            params.put("appId",appId);
             params.put("entInfo",entInfo);
             params.put("serviceType",serviceType);
             params.put("timestamp",timestamp);
             //验证参数
             if(checkParams(params)){
+                params.put("appId",appId);
+                params.put("ip",ip);
                 JSONObject jsonObject = iUserApiService.company(params);
                 responseStr = jsonObject.toJSONString();
             }else{
