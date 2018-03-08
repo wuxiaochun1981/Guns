@@ -1,19 +1,15 @@
 package com.stylefeng.guns.rest.modular.api.controller;
 
-import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 import com.stylefeng.guns.rest.common.controller.BaseController;
 import com.stylefeng.guns.rest.config.Constant;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.api.service.IUserApiService;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
-import com.sun.deploy.net.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

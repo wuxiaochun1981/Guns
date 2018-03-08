@@ -91,10 +91,10 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         params.remove("appId");
         params.remove("ip");
 
-//        JSONObject jSONObject = queryInfo(server + "/query/person",params);
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("code",200);
-        jSONObject.put("trade_no","234234234");
+        JSONObject jSONObject = queryInfo(server + "/query/person",params);
+//        JSONObject jSONObject = new JSONObject();
+//        jSONObject.put("code",200);
+//        jSONObject.put("trade_no","234234234");
 
         //状态码
         String code = jSONObject.getString("code");
