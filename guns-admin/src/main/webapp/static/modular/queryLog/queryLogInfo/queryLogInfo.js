@@ -17,10 +17,21 @@ QueryLogInfo.initColumn = function () {
             {title: '编号', field: 'id', visible: true, align: 'center', valign: 'middle'},
             {title: '用户uid', field: 'uid', visible: true, align: 'center', valign: 'middle'},
             {title: '用户appid', field: 'appid', visible: true, align: 'center', valign: 'middle'},
-            {title: '访问状态  0 成功 1 失败', field: 'status', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',formatter: function (value, row, index) {
+                    // var date = eval('new ' + eval(value).source)
+                    // return date.format("yyyy年MM月dd日");
+                    if(value==0){
+                        return "正常";
+                    }else if(value==1){
+                        return "失败";
+                    }
+                    return "未知";
+                }
+             },
             {title: 'ip地址', field: 'ip', visible: true, align: 'center', valign: 'middle'},
             {title: '请求参数', field: 'params', visible: true, align: 'center', valign: 'middle'},
             {title: '订单号', field: 'tradeNo', visible: true, align: 'center', valign: 'middle'},
+            {title: '返回结果', field: 'resultStr', visible: true, align: 'center', valign: 'middle'},
             {title: '访问时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'}
     ];
 };

@@ -68,6 +68,7 @@ public class QueryLogInfoController extends BaseController {
         for(QueryLogInfo queryLogInfo:list){
             if(StringUtils.isNotBlank(queryLogInfo.getParams())){
                 queryLogInfo.setParams(SecurityUtil.decrypt(queryLogInfo.getParams()));
+                queryLogInfo.setResultStr(SecurityUtil.decrypt(queryLogInfo.getResultStr()));
             }
         }
         return list;

@@ -14,3 +14,4 @@ import com.stylefeng.guns.rest.common.persistence.model.QueryLogInfo;
 public interface IQueryLogInfoService extends IService<QueryLogInfo> {
 
 }
+

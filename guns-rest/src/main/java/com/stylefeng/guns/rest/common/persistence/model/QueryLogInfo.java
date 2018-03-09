@@ -40,6 +40,10 @@ public class QueryLogInfo extends Model<QueryLogInfo> {
     private String params;
     @TableField("trade_no")
     private String tradeNo;
+
+    @TableField("result_str")
+    private String resultStr;
+
     /**
      * 访问时间
      */
@@ -103,6 +107,14 @@ public class QueryLogInfo extends Model<QueryLogInfo> {
         this.tradeNo = tradeNo;
     }
 
+    public String getResultStr() {
+        return resultStr;
+    }
+
+    public void setResultStr(String resultStr) {
+        this.resultStr = resultStr;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -126,6 +138,7 @@ public class QueryLogInfo extends Model<QueryLogInfo> {
         ", ip=" + ip +
         ", params=" + params +
         ", tradeNo=" + tradeNo +
+        ", resultStr=" + resultStr +
         ", createTime=" + createTime +
         "}";
     }

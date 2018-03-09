@@ -1,5 +1,6 @@
 package com.stylefeng.guns.rest.modular.api.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.stylefeng.guns.rest.common.controller.BaseController;
 import com.stylefeng.guns.rest.config.Constant;
@@ -56,7 +57,9 @@ public class UserApiController extends BaseController {
             String appId = getAppId(request);
             String ip = getIpAddr(request);
 
-            logger.info("个人查询: appId=" + appId + " idCode=" + idCode + " phoneNumber=" + phoneNumber + " realName=" + realName + " serviceType=" + serviceType + " timestamp=" + timestamp);
+            if(logger.isDebugEnabled()){
+                logger.debug("个人查询: appId=" + appId + " idCode=" + idCode + " phoneNumber=" + phoneNumber + " realName=" + realName + " serviceType=" + serviceType + " timestamp=" + timestamp);
+            }
 
             if(StringUtils.isBlank(appId)){
                 responseStr = getResponse(Constant.ResponseCode.tokenTimeOut,Constant.ResponseMsg.tokenTimeOut);
@@ -72,7 +75,7 @@ public class UserApiController extends BaseController {
             params.put("idCode",idCode);
             params.put("phoneNumber",phoneNumber);
             params.put("realName",realName);
-            params.put("serviceType",serviceType);
+            params.put("service",serviceType);
             params.put("timestamp",timestamp);
             //验证参数
             if(checkParams(params)){
@@ -98,7 +101,9 @@ public class UserApiController extends BaseController {
         try{
             String appId = getAppId(request);
             String ip = getIpAddr(request);
-            logger.info("个人查询: appId=" + appId + " entInfo=" + entInfo + " serviceType=" + serviceType + " timestamp=" + timestamp);
+            if(logger.isDebugEnabled()){
+                logger.debug("企业查询: appId=" + appId + " entInfo=" + entInfo + " serviceType=" + serviceType + " timestamp=" + timestamp);
+            }
 
             if(StringUtils.isBlank(appId)){
                 responseStr = getResponse(Constant.ResponseCode.tokenTimeOut,Constant.ResponseMsg.tokenTimeOut);
@@ -112,7 +117,7 @@ public class UserApiController extends BaseController {
             // 请求参数(client里面会自动加密,所以这里请使用明文)、
             Map<String, Object> params = new HashMap();
             params.put("entInfo",entInfo);
-            params.put("serviceType",serviceType);
+            params.put("service",serviceType);
             params.put("timestamp",timestamp);
             //验证参数
             if(checkParams(params)){

@@ -3,12 +3,12 @@ package com.stylefeng.guns.rest.modular.api.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.core.util.MD5Util;
 import com.stylefeng.guns.rest.common.persistence.dao.UserInfoMapper;
 import com.stylefeng.guns.rest.common.persistence.model.QueryLogInfo;
 import com.stylefeng.guns.rest.common.persistence.model.UserInfo;
+import com.stylefeng.guns.rest.common.util.MD5;
 import com.stylefeng.guns.rest.common.util.SecurityUtil;
 import com.stylefeng.guns.rest.config.Constant;
 import com.stylefeng.guns.rest.modular.api.service.IUserApiService;
@@ -59,7 +59,7 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
      */
     public String getDigitalSignature(Map<String, Object> parameter) {
         StringBuilder digitalSignature = new StringBuilder(200);
-        digitalSignature.append("appSecret");
+        digitalSignature.append(appSecret);
         //零时存放排序的key
         List<String> keyList = new ArrayList();
         //set转list
@@ -71,7 +71,7 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
             Object value = parameter.get(key);
             digitalSignature.append(key).append(value);
         }
-        return  MD5Util.encrypt(digitalSignature.toString());
+        return MD5.getMD5(digitalSignature.toString());
     }
 
     /**
@@ -90,7 +90,7 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         String ip = (String)params.get("ip");
         params.remove("appId");
         params.remove("ip");
-
+        params.put("timestamp",subTimestamp());
         JSONObject jSONObject = queryInfo(server + "/query/person",params);
 //        JSONObject jSONObject = new JSONObject();
 //        jSONObject.put("code",200);
@@ -106,20 +106,52 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         if(StringUtils.equals(Constant.ResponseCode.ok,code)){
             paramsTemp.put("accessCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,0,params);
+            saveQueryLog(ip,appId,tradeNo,0,params,jSONObject.toJSONString());
         }else{
             paramsTemp.put("failCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,1,params);
+            saveQueryLog(ip,appId,tradeNo,1,params,jSONObject.toJSONString());
         }
         result.put("code",jSONObject.getString("code"));
         result.put("result",jSONObject.getString("result"));
+        result.put("msg",jSONObject.getString("msg"));
         return result;
     }
 ;
     @Override
     public JSONObject company(Map<String, Object> params) {
-        return null;
+        JSONObject result = new JSONObject();
+
+        String appId = (String)params.get("appId");
+        String ip = (String)params.get("ip");
+        params.remove("appId");
+        params.remove("ip");
+        params.put("timestamp",subTimestamp());
+        JSONObject jSONObject = queryInfo(server + "/query/company",params);
+//        JSONObject jSONObject = new JSONObject();
+//        jSONObject.put("code",200);
+//        jSONObject.put("trade_no","234234234");
+
+        //状态码
+        String code = jSONObject.getString("code");
+        //订单号
+        String tradeNo = jSONObject.getString("trade_no");
+        Map<String, Object> paramsTemp = new HashMap<>();
+        paramsTemp.put("appid",appId);
+        paramsTemp.put("status",0);
+        if(StringUtils.equals(Constant.ResponseCode.ok,code)){
+            paramsTemp.put("accessCount",1);
+            this.baseMapper.updateQueryCount(paramsTemp);
+            saveQueryLog(ip,appId,tradeNo,0,params,jSONObject.toJSONString());
+        }else{
+            paramsTemp.put("failCount",1);
+            this.baseMapper.updateQueryCount(paramsTemp);
+            saveQueryLog(ip,appId,tradeNo,1,params,jSONObject.toJSONString());
+        }
+        result.put("code",jSONObject.getString("code"));
+        result.put("result",jSONObject.getString("data"));
+        result.put("msg",jSONObject.getString("msg"));
+        return result;
     }
 
     /**
@@ -132,7 +164,16 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         params.put("appKey",appKey);
         String digitalSignature = getDigitalSignature(params);
         params.put("digitalSignature", digitalSignature);
+        if(logger.isDebugEnabled()){
+            logger.debug("http请求:" + JSON.toJSONString(params));
+        }
+        long start = System.currentTimeMillis();
         String result = HttpUtil.get(url, params,defaultTimeOut);
+        long end = System.currentTimeMillis();
+        if(logger.isDebugEnabled()){
+            logger.info("http请求结果:" + result);
+        }
+        logger.info("http请求用时:" + (end-start));
         if(StringUtils.isNotBlank(result)){
             return JSON.parseObject(result);
         }
@@ -145,10 +186,11 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
      * @param appid
      * @param status
      * @param tradeNo
+     * @param resultStr
      * @param params
      * @return
      */
-    private boolean saveQueryLog(String ip,String appid,String tradeNo,Integer status,Map<String, Object> params){
+    private boolean saveQueryLog(String ip,String appid,String tradeNo,Integer status,Map<String, Object> params,String resultStr){
         boolean result = false;
         QueryLogInfo  queryLogInfo = new  QueryLogInfo();
         queryLogInfo.setAppid(appid);
@@ -156,21 +198,22 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         queryLogInfo.setStatus(status);
         queryLogInfo.setTradeNo(tradeNo);
         queryLogInfo.setCreateTime(new Date());
+        queryLogInfo.setResultStr(SecurityUtil.encrypt(resultStr));
         queryLogInfo.setParams(SecurityUtil.encrypt(JSON.toJSONString(params)));
         result = queryLogInfo.insert();
         return result;
     }
 
     public static void main(String[] args) {
-//        UserApiServiceImpl usi = new UserApiServiceImpl();
+        UserApiServiceImpl usi = new UserApiServiceImpl();
 //
-//        Map<String,Object> testMap=new HashMap<>();
-//
-//        testMap.put("bbb","1");
-//        testMap.put("aaaa","2");
-//        testMap.put("cccc","3");
-//        testMap.put("dddd","4");
-//        System.out.println( usi.getDigitalSignature(testMap));
+        Map<String,Object> testMap=new HashMap<>();
+
+        testMap.put("bbb","1");
+        testMap.put("aaaa","2");
+        testMap.put("cccc","3");
+        testMap.put("dddd","4");
+        System.out.println( usi.getDigitalSignature(testMap));
 
     }
 }

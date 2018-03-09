@@ -11,12 +11,13 @@
         <result column="ip" property="ip" />
         <result column="params" property="params" />
         <result column="trade_no" property="tradeNo" />
+        <result column="result_str" property="resultStr" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, uid, appid, status, ip, params, trade_no AS tradeNo, create_time AS createTime
+        id, uid, appid, status, ip, params, trade_no AS tradeNo, result_str AS resultStr, create_time AS createTime
     </sql>
 
 </mapper>

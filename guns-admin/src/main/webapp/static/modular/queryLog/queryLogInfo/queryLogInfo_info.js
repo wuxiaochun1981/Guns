@@ -51,6 +51,7 @@ QueryLogInfoInfoDlg.collectData = function() {
     .set('status')
     .set('ip')
     .set('params')
+    .set('resultStr')
     .set('tradeNo')
     ;
 }
