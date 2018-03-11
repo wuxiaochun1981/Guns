@@ -22,7 +22,7 @@ public enum BizExceptionEnum {
     /**
      * 其他
      */
-    AUTH_REQUEST_ERROR(400, "appid或userKey错误");
+    AUTH_REQUEST_ERROR(400, "验证信息错误");
 
 
 

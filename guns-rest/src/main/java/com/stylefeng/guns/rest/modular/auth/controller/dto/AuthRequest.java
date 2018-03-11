@@ -12,7 +12,9 @@ public class AuthRequest implements Credence {
 
     private String appid;
 
-    private String userKey;
+    private String digitalSignature;
+
+    private String timestamp;
 
     public void setAppid(String appid) {
         this.appid = appid;
@@ -22,12 +24,20 @@ public class AuthRequest implements Credence {
         return appid;
     }
 
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
+    public String getDigitalSignature() {
+        return digitalSignature;
     }
 
-    public String getUserKey() {
-        return userKey;
+    public void setDigitalSignature(String digitalSignature) {
+        this.digitalSignature = digitalSignature;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -37,6 +47,11 @@ public class AuthRequest implements Credence {
 
     @Override
     public String getCredenceCode() {
-        return this.userKey;
+        return this.digitalSignature;
+    }
+
+    @Override
+    public String getCredenceTime() {
+        return this.timestamp;
     }
 }

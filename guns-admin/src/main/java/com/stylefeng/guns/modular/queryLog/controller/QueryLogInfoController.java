@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.queryLog.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.util.SecurityUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +66,11 @@ public class QueryLogInfoController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        List<QueryLogInfo> list = queryLogInfoService.selectList(null);
+        EntityWrapper entityWrapper = new EntityWrapper<QueryLogInfo>();
+        if(StringUtils.isNotBlank(condition)){
+            entityWrapper.like("appid",condition).or().like("ip",condition).or().like("trade_no",condition);
+        }
+        List<QueryLogInfo> list = queryLogInfoService.selectList(entityWrapper);
         for(QueryLogInfo queryLogInfo:list){
             if(StringUtils.isNotBlank(queryLogInfo.getParams())){
                 queryLogInfo.setParams(SecurityUtil.decrypt(queryLogInfo.getParams()));

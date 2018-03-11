@@ -1,20 +1,21 @@
 package com.stylefeng.guns.modular.usermanager.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.stylefeng.guns.common.constant.Const;
+import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.log.LogObjectHolder;
 import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.modular.usermanager.service.IUserInfoService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.stylefeng.guns.core.log.LogObjectHolder;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.stylefeng.guns.common.persistence.model.UserInfo;
-import com.stylefeng.guns.modular.usermanager.service.IUserInfoService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,9 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/userInfo")
 public class UserInfoController extends BaseController {
+
+    /** 日志 */
+    private static final Log logger = LogFactory.getLog(UserInfoController.class);
 
     private String PREFIX = "/usermanager/userInfo/";
 
@@ -68,7 +72,13 @@ public class UserInfoController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return userInfoService.selectList(new EntityWrapper<UserInfo>().ne("status",2));
+        System.out.println("condition：" + condition);
+        EntityWrapper entityWrapper = new EntityWrapper<UserInfo>();
+        entityWrapper.ne("status",2);
+        if(StringUtils.isNotBlank(condition)){
+            entityWrapper.andNew().like("user_name",condition).or().like("phone",condition).or().like("appid",condition);
+        }
+        return userInfoService.selectList(entityWrapper);
     }
 
     /**
@@ -121,14 +131,19 @@ public class UserInfoController extends BaseController {
     /**
      * 验证appId是否重复
      */
-    @RequestMapping(value = "/checkDuplicate")
+    @RequestMapping(value = "/checkDuplicate", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object checkDuplicate(String appId){
-        List<UserInfo> list = userInfoService.selectList(new EntityWrapper<UserInfo>().eq("appid",appId).ne("status",2));
+    public Object checkDuplicate(String appid,Long id){
+        EntityWrapper entityWrapper = new EntityWrapper<UserInfo>();
+        entityWrapper.eq("appid",appid).ne("status",2);
+        if(id !=null){
+            entityWrapper.ne("id",id);
+        }
+        List<UserInfo> list = userInfoService.selectList(entityWrapper);
         if(list != null && list.size()>0){
-            return getResultInfo(Const.resultCode.fail,"",list.get(0));
+            return getResultInfo(false);
         }else{
-            return getResultInfo(Const.resultCode.ok,"",null);
+            return getResultInfo(true);
         }
     }
 }

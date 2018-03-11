@@ -51,14 +51,14 @@ public class UserApiController extends BaseController {
 
     @RequestMapping(value = "/person", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public String person(String idCode, String phoneNumber, String realName, String serviceType, String timestamp, HttpServletRequest request){
+    public String person(String idCode, String phoneNumber, String realName, String serviceType, String timestamp,String randomKey, HttpServletRequest request){
         String  responseStr = "";
         try{
             String appId = getAppId(request);
             String ip = getIpAddr(request);
 
             if(logger.isDebugEnabled()){
-                logger.debug("个人查询: appId=" + appId + " idCode=" + idCode + " phoneNumber=" + phoneNumber + " realName=" + realName + " serviceType=" + serviceType + " timestamp=" + timestamp);
+                logger.debug("个人查询: appId=" + appId + " idCode=" + idCode + " phoneNumber=" + phoneNumber + " realName=" + realName + " serviceType=" + serviceType + " timestamp=" + timestamp + " randomKey=" + randomKey);
             }
 
             if(StringUtils.isBlank(appId)){
@@ -95,14 +95,14 @@ public class UserApiController extends BaseController {
 
     @RequestMapping(value = "/company", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public String company(String entInfo,String serviceType,String timestamp,HttpServletRequest request){
+    public String company(String entInfo,String timestamp,String randomKey,HttpServletRequest request){
         String  responseStr = "";
 
         try{
             String appId = getAppId(request);
             String ip = getIpAddr(request);
             if(logger.isDebugEnabled()){
-                logger.debug("企业查询: appId=" + appId + " entInfo=" + entInfo + " serviceType=" + serviceType + " timestamp=" + timestamp);
+                logger.debug("企业查询: appId=" + appId + " entInfo=" + entInfo + " timestamp=" + timestamp + " randomKey=" + randomKey);
             }
 
             if(StringUtils.isBlank(appId)){
@@ -110,14 +110,9 @@ public class UserApiController extends BaseController {
                 return responseStr;
             }
 
-            if(!StringUtils.equals(serviceType,Constant.Query.fanzui)){
-                responseStr = getResponse(Constant.ResponseCode.validationNot,"serviceType参数不正确");
-                return responseStr;
-            }
             // 请求参数(client里面会自动加密,所以这里请使用明文)、
             Map<String, Object> params = new HashMap();
-            params.put("entInfo",entInfo);
-            params.put("service",serviceType);
+            params.put("ent_info",entInfo);
             params.put("timestamp",timestamp);
             //验证参数
             if(checkParams(params)){

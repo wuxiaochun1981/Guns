@@ -132,4 +132,15 @@ public class BaseController {
         }
         return result;
     }
+
+    /**
+     * 生产返回数据
+     * @param valid
+     * @return
+     */
+    protected JSONObject getResultInfo(boolean valid) {
+        JSONObject result = new JSONObject();
+        result.put("valid",valid);
+        return result;
+    }
 }

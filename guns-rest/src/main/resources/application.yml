@@ -45,3 +45,4 @@ cycredit:
   appKey:
   appSecret:
   defaultTimeOut: 10000
+  errorAmount: 10 #验证用户传输数据时间和系统时间相差分钟数
