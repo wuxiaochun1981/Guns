@@ -93,8 +93,8 @@ public class UserApiController extends BaseController {
         return responseStr;
     }
 
-    @RequestMapping(value = "/company", method = {RequestMethod.POST,RequestMethod.GET})
-    @ResponseBody
+//    @RequestMapping(value = "/company", method = {RequestMethod.POST,RequestMethod.GET})
+//    @ResponseBody
     public String company(String entInfo,String timestamp,String randomKey,HttpServletRequest request){
         String  responseStr = "";
 

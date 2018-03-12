@@ -1,6 +1,9 @@
 package com.stylefeng.guns.modular.usermanager.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.stylefeng.guns.common.annotion.BussinessLog;
+import com.stylefeng.guns.common.constant.dictmap.RoleDict;
+import com.stylefeng.guns.common.constant.dictmap.UserInfoDict;
 import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.log.LogObjectHolder;
@@ -85,6 +88,7 @@ public class UserInfoController extends BaseController {
      * 新增接口权限管理
      */
     @RequestMapping(value = "/add")
+    @BussinessLog(value = "添加用户接口权限", key = "id", dict = UserInfoDict.class)
     @ResponseBody
     public Object add(UserInfo userInfo) {
         userInfo.setuserKey(UUID.randomUUID().toString());
@@ -100,6 +104,7 @@ public class UserInfoController extends BaseController {
      * 删除接口权限管理
      */
     @RequestMapping(value = "/delete")
+    @BussinessLog(value = "删除用户接口权限", key = "id", dict = UserInfoDict.class)
     @ResponseBody
     public Object delete(@RequestParam Integer userInfoId) {
         UserInfo userInfo = new UserInfo();
@@ -114,6 +119,7 @@ public class UserInfoController extends BaseController {
      * 修改接口权限管理
      */
     @RequestMapping(value = "/update")
+    @BussinessLog(value = "编辑用户接口权限", key = "id", dict = UserInfoDict.class)
     @ResponseBody
     public Object update(UserInfo userInfo) {
         userInfoService.updateById(userInfo);
