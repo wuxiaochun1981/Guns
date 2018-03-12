@@ -105,7 +105,7 @@ public class UserInfo extends Model<UserInfo> {
 		return userKey;
 	}
 
-	public void setuserKey(String userKey) {
+	public void setUserKey(String userKey) {
 		this.userKey = userKey;
 	}
 

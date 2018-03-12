@@ -91,7 +91,7 @@ public class UserInfoController extends BaseController {
     @BussinessLog(value = "添加用户接口权限", key = "id", dict = UserInfoDict.class)
     @ResponseBody
     public Object add(UserInfo userInfo) {
-        userInfo.setuserKey(UUID.randomUUID().toString());
+        userInfo.setUserKey(UUID.randomUUID().toString());
         userInfo.setCreateUser(ShiroKit.getUser().getAccount());
         userInfo.setCreateTime(new Date());
         userInfo.setAccessCount(0);
