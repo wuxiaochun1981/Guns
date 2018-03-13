@@ -69,14 +69,10 @@ public class DbValidator implements IReqValidator {
      */
     public boolean validate(String timestampStr) {
         try{
-            Long timestamp = Long.valueOf(timestampStr);
-            Date data = new Date(timestamp);
-            Date systemData = new Date();
-            if(systemData.after(data)){
-                long cont = DateUtil.between(data,systemData, DateUnit.MINUTE);
-                if(errorAmount>cont){
-                    return true;
-                }
+            Date date = new Date(Long.valueOf(timestampStr));
+            long cont = DateUtil.between(new Date(),date, DateUnit.MINUTE);
+            if(errorAmount>cont){
+                return true;
             }
             return false;
         }catch (Exception e){
@@ -101,7 +97,10 @@ public class DbValidator implements IReqValidator {
         //1520691015242
         //1520691036899
         Date date = new Date(1520691015242l);
+
+        DateUtil.between(date,new Date(), DateUnit.MINUTE);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(df.format(date));
+        System.out.println(DateUtil.between(date,new Date(), DateUnit.MINUTE));
+        System.out.println(System.currentTimeMillis());
     }
 }
