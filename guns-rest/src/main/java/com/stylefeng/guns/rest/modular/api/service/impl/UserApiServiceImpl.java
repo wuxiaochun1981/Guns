@@ -3,8 +3,8 @@ package com.stylefeng.guns.rest.modular.api.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.stylefeng.guns.core.util.MD5Util;
 import com.stylefeng.guns.rest.common.persistence.dao.UserInfoMapper;
 import com.stylefeng.guns.rest.common.persistence.model.QueryLogInfo;
 import com.stylefeng.guns.rest.common.persistence.model.UserInfo;
@@ -17,8 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -51,6 +54,9 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
     @Value("${cycredit.defaultTimeOut}")
     private Integer defaultTimeOut=10000;
 
+
+    @Resource
+    private CacheManager cacheManager;
 
     /**
      * 生成digitalSignature 数据
@@ -91,10 +97,10 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         params.remove("appId");
         params.remove("ip");
         params.put("timestamp",subTimestamp());
-        JSONObject jSONObject = queryInfo(server + "/query/person",params);
-//        JSONObject jSONObject = new JSONObject();
-//        jSONObject.put("code",200);
-//        jSONObject.put("trade_no","234234234");
+//        JSONObject jSONObject = queryInfo(server + "/query/person",params);
+        JSONObject jSONObject = new JSONObject();
+        jSONObject.put("code",200);
+        jSONObject.put("trade_no","234234234");
 
         //状态码
         String code = jSONObject.getString("code");
@@ -106,11 +112,11 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         if(StringUtils.equals(Constant.ResponseCode.ok,code)){
             paramsTemp.put("accessCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,0,params,jSONObject.toJSONString());
+            saveQueryLog(getid(appId),ip,appId,tradeNo,0,params,jSONObject.toJSONString());
         }else{
             paramsTemp.put("failCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,1,params,jSONObject.toJSONString());
+            saveQueryLog(getid(appId),ip,appId,tradeNo,1,params,jSONObject.toJSONString());
         }
         result.put("code",jSONObject.getString("code"));
         result.put("result",jSONObject.getString("result"));
@@ -142,11 +148,11 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         if(StringUtils.equals(Constant.ResponseCode.ok,code)){
             paramsTemp.put("accessCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,0,params,jSONObject.toJSONString());
+            saveQueryLog(getid(appId),ip,appId,tradeNo,0,params,jSONObject.toJSONString());
         }else{
             paramsTemp.put("failCount",1);
             this.baseMapper.updateQueryCount(paramsTemp);
-            saveQueryLog(ip,appId,tradeNo,1,params,jSONObject.toJSONString());
+            saveQueryLog(getid(appId),ip,appId,tradeNo,1,params,jSONObject.toJSONString());
         }
         result.put("code",jSONObject.getString("code"));
         result.put("result",jSONObject.getString("data"));
@@ -182,6 +188,7 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
 
     /**
      * 保存log日志
+     * @param uid
      * @param ip
      * @param appid
      * @param status
@@ -190,9 +197,10 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
      * @param params
      * @return
      */
-    private boolean saveQueryLog(String ip,String appid,String tradeNo,Integer status,Map<String, Object> params,String resultStr){
+    private boolean saveQueryLog(Integer uid, String ip,String appid,String tradeNo,Integer status,Map<String, Object> params,String resultStr){
         boolean result = false;
         QueryLogInfo  queryLogInfo = new  QueryLogInfo();
+        queryLogInfo.setUid(uid);
         queryLogInfo.setAppid(appid);
         queryLogInfo.setIp(ip);
         queryLogInfo.setStatus(status);
@@ -203,6 +211,22 @@ public class UserApiServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> im
         result = queryLogInfo.insert();
         return result;
     }
+
+    private Integer getid(String appid){
+        Cache cache =  cacheManager.getCache(Constant.Cache.tokenCache);
+        UserInfo userInfo = cache.get(appid,UserInfo.class);
+        if(userInfo!=null){
+           return userInfo.getId();
+        }else{
+            List<UserInfo> userInfos = selectList(new EntityWrapper<UserInfo>().eq("appid", appid).eq("status",0));
+            if(userInfos!=null && userInfos.size()>0){
+                cache.put(appid,userInfos.get(0));
+                return userInfos.get(0).getId();
+            }
+            return 0;
+        }
+    }
+
 
     public static void main(String[] args) {
         UserApiServiceImpl usi = new UserApiServiceImpl();

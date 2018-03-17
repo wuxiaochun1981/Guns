@@ -19,8 +19,10 @@ UserInfo.initColumn = function () {
         {title: '手机号', field: 'phone', visible: true, align: 'center', valign: 'middle'},
         {title: '应用id', field: 'appid', visible: true, align: 'center', valign: 'middle'},
         {title: '用户userKey', field: 'userKey', visible: true, align: 'center', valign: 'middle'},
-        {title: '成功访问数量', field: 'accessCount', visible: true, align: 'center', valign: 'middle'},
-        {title: '失败访问次数', field: 'failCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '成功访问总数', field: 'accessCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '失败访问总数', field: 'failCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '时间成功访问数', field: 'currAccessCount', visible: true, align: 'center', valign: 'middle'},
+        {title: '时间失败访问数', field: 'currFailCount', visible: true, align: 'center', valign: 'middle'},
         {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',formatter: function (value, row, index) {
             // var date = eval('new ' + eval(value).source)
             // return date.format("yyyy年MM月dd日");
@@ -107,6 +109,8 @@ UserInfo.delete = function () {
 UserInfo.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['beginTime'] = $("#beginTime").val();
+    queryData['endTime'] = $("#endTime").val();
     UserInfo.table.refresh({query: queryData});
 };
 

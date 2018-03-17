@@ -4,15 +4,18 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.common.annotion.BussinessLog;
 import com.stylefeng.guns.common.constant.dictmap.RoleDict;
 import com.stylefeng.guns.common.constant.dictmap.UserInfoDict;
+import com.stylefeng.guns.common.persistence.model.QueryLogInfo;
 import com.stylefeng.guns.common.persistence.model.UserInfo;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.log.LogObjectHolder;
 import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.modular.queryLog.service.IQueryLogInfoService;
 import com.stylefeng.guns.modular.usermanager.service.IUserInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +44,9 @@ public class UserInfoController extends BaseController {
 
     @Autowired
     private IUserInfoService userInfoService;
+
+    @Autowired
+    private IQueryLogInfoService queryLogInfoService;
 
     /**
      * 跳转到接口权限管理首页
@@ -74,14 +80,43 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
-        System.out.println("condition：" + condition);
+    public Object list(String condition,String beginTime,String endTime) {
+        logger.debug("查询 condition=" +condition + " beginTime=" + beginTime + " endTime=" + endTime);
         EntityWrapper entityWrapper = new EntityWrapper<UserInfo>();
         entityWrapper.ne("status",2);
         if(StringUtils.isNotBlank(condition)){
             entityWrapper.andNew().like("user_name",condition).or().like("phone",condition).or().like("appid",condition);
         }
-        return userInfoService.selectList(entityWrapper);
+
+        List<UserInfo> list = userInfoService.selectList(entityWrapper);
+        if(list!=null && list.size()>0 && (StringUtils.isNotBlank(beginTime) || StringUtils.isNotBlank(endTime))){
+            for(UserInfo userInfo: list){
+                //处理成功的
+                EntityWrapper logEntityWrapper = new EntityWrapper<QueryLogInfo>();
+                logEntityWrapper.eq("uid",userInfo.getId()).eq("status",0);
+                if(StringUtils.isNotBlank(beginTime)){
+                    logEntityWrapper.ge("create_time",beginTime);
+                }
+                if(StringUtils.isNotBlank(endTime)){
+                    logEntityWrapper.le("create_time",endTime);
+                }
+                int cont = queryLogInfoService.selectCount(logEntityWrapper);
+                userInfo.setCurrAccessCount(cont);
+
+                //处理失败的
+                logEntityWrapper = new EntityWrapper<QueryLogInfo>();
+                logEntityWrapper.eq("uid",userInfo.getId()).eq("status",1);
+                if(StringUtils.isNotBlank(beginTime)){
+                    logEntityWrapper.ge("create_time",beginTime);
+                }
+                if(StringUtils.isNotBlank(endTime)){
+                    logEntityWrapper.le("create_time",endTime);
+                }
+                cont = queryLogInfoService.selectCount(logEntityWrapper);
+                userInfo.setCurrFailCount(cont);
+            }
+        }
+        return list;
     }
 
     /**

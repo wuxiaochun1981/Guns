@@ -14,6 +14,23 @@ package com.stylefeng.guns.rest.config;
  */
 public class Constant {
 
+
+    /**
+     * 缓存
+     */
+    public interface Cache {
+
+        /**
+         * 系统级缓存
+         */
+        String constant = "CONSTANT";
+
+        /**
+         * token缓存
+         */
+        String tokenCache = "tokenCache";
+    }
+
     /**
      * 请求类型
      */

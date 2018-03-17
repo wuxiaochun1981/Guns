@@ -13,6 +13,12 @@
                                 <#NameCon id="condition" name="名称" placeholder="名称/手机号/appid"/>
                             </div>
                             <div class="col-sm-3">
+                                <#TimeCon id="beginTime" name="日志开始日期" isTime="true" pattern="YYYY-MM-DD hh:mm:ss"/>
+                            </div>
+                            <div class="col-sm-3">
+                                <#TimeCon id="endTime" name="日志结束日期" isTime="true" pattern="YYYY-MM-DD hh:mm:ss"/>
+                            </div>
+                            <div class="col-sm-3">
                                 <#button name="搜索" icon="fa-search" clickFun="UserInfo.search()"/>
                             </div>
                         </div>

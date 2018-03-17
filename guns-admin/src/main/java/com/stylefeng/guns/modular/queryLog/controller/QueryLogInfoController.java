@@ -65,11 +65,19 @@ public class QueryLogInfoController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(String condition,String beginTime,String endTime) {
         EntityWrapper entityWrapper = new EntityWrapper<QueryLogInfo>();
         if(StringUtils.isNotBlank(condition)){
             entityWrapper.like("appid",condition).or().like("ip",condition).or().like("trade_no",condition);
         }
+
+        if(StringUtils.isNotBlank(beginTime)){
+            entityWrapper.ge("create_time",beginTime);
+        }
+        if(StringUtils.isNotBlank(endTime)){
+            entityWrapper.le("create_time",endTime);
+        }
+
         List<QueryLogInfo> list = queryLogInfoService.selectList(entityWrapper);
         for(QueryLogInfo queryLogInfo:list){
             if(StringUtils.isNotBlank(queryLogInfo.getParams())){

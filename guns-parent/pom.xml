@@ -44,6 +44,7 @@
         <jwt.version>0.7.0</jwt.version>
         <flowable.version>6.2.0</flowable.version>
         <hutool-all.version>4.0.5</hutool-all.version>
+        <sf.ehcache.version>2.10.4</sf.ehcache.version>
     </properties>
 
     <dependencyManagement>
@@ -172,6 +173,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${sf.ehcache.version}</version>
             </dependency>
 
         </dependencies>

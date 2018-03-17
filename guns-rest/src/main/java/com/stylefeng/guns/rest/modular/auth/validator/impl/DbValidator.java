@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.rest.common.persistence.dao.UserInfoMapper;
 import com.stylefeng.guns.rest.common.persistence.model.UserInfo;
 import com.stylefeng.guns.rest.common.util.MD5;
+import com.stylefeng.guns.rest.config.Constant;
 import com.stylefeng.guns.rest.modular.auth.validator.IReqValidator;
 import com.stylefeng.guns.rest.modular.auth.validator.dto.Credence;
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +15,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +38,10 @@ public class DbValidator implements IReqValidator {
 
 
     @Autowired
-    UserInfoMapper userInfoMapper;
+    private UserInfoMapper userInfoMapper;
+
+    @Resource
+    private CacheManager cacheManager;
 
     @Value("${cycredit.errorAmount}")
     private Integer errorAmount;
@@ -54,6 +61,10 @@ public class DbValidator implements IReqValidator {
         List<UserInfo> userInfos = userInfoMapper.selectList(new EntityWrapper<UserInfo>().eq("appid", credence.getCredenceName()).eq("status",0));
         if (userInfos != null && userInfos.size() > 0) {
             UserInfo userInfo = userInfos.get(0);
+
+            Cache cache = cacheManager.getCache(Constant.Cache.tokenCache);
+            cache.put(credence.getCredenceName(),userInfo);
+
             String digitalSignature = getDigitalSignature(credence.getCredenceName(),userInfo.getUserKey(),credence.getCredenceTime());
             if(StringUtils.equalsIgnoreCase(digitalSignature,credence.getCredenceCode())){
                 return true;

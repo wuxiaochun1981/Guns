@@ -104,6 +104,8 @@ QueryLogInfo.delete = function () {
 QueryLogInfo.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['beginTime'] = $("#beginTime").val();
+    queryData['endTime'] = $("#endTime").val();
     QueryLogInfo.table.refresh({query: queryData});
 };
 

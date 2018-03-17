@@ -69,6 +69,16 @@ public class UserInfo extends Model<UserInfo> {
 	private Date createTime;
 
 
+	/** 当前时间查询条件成功条数 */
+	@TableField(exist=false)
+	private Integer currAccessCount;
+
+	/** 当前时间查询条件失败条数 */
+	@TableField(exist=false)
+	private Integer currFailCount;
+
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -149,6 +159,22 @@ public class UserInfo extends Model<UserInfo> {
 		this.createTime = createTime;
 	}
 
+	public Integer getCurrAccessCount() {
+		return currAccessCount;
+	}
+
+	public void setCurrAccessCount(Integer currAccessCount) {
+		this.currAccessCount = currAccessCount;
+	}
+
+	public Integer getCurrFailCount() {
+		return currFailCount;
+	}
+
+	public void setCurrFailCount(Integer currFailCount) {
+		this.currFailCount = currFailCount;
+	}
+
 	@Override
 	protected Serializable pkVal() {
 		return this.id;
@@ -169,4 +195,6 @@ public class UserInfo extends Model<UserInfo> {
 			", createTime=" + createTime +
 			"}";
 	}
+
+
 }
