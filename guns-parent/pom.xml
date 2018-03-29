@@ -43,7 +43,8 @@
         <mysql-connector-java.version>5.1.38</mysql-connector-java.version>
         <jwt.version>0.7.0</jwt.version>
         <flowable.version>6.2.0</flowable.version>
-        <hutool.version>4.0.0</hutool.version>
+        <hutool-all.version>4.0.7</hutool-all.version>
+        <JSON-java.version>20180130</JSON-java.version>
     </properties>
 
     <dependencyManagement>
@@ -170,13 +171,13 @@
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>${hutool.version}</version>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-http</artifactId>
-                <version>${hutool.version}</version>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${JSON-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
