@@ -1,8 +1,7 @@
 package com.stylefeng.guns.rest.modular.api.service.impl;
 
-import cn.hutool.http.HtmlUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.XML;
@@ -12,7 +11,12 @@ import com.stylefeng.guns.rest.modular.api.service.MsgService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +36,7 @@ import java.util.Map;
  * @author wuxiaochun@jd.com
  * @version 1.0.0
  */
+@Service
 public class MsgServiceImpl implements MsgService {
 
     /** 日志 */
@@ -44,6 +49,12 @@ public class MsgServiceImpl implements MsgService {
 
     private String defaultCity = "北京";
 
+    @Value("${api.weatherUrl}")
+    private String weatherUrl;
+
+    @Value("${api.xianxingUrl}")
+    private String xianxingUrl;
+
     @Override
     public String getMsg(String city) {
         if(StringUtils.isBlank(city)){
@@ -51,7 +62,7 @@ public class MsgServiceImpl implements MsgService {
         }
         StringBuilder msg = new StringBuilder();
         msg.append(sdf.format(new Date())).append(" ");
-        msg.append("农历 ").append(LunarCalendar.getInstance().getMonthAndDay());
+        msg.append("农历 ").append(LunarCalendar.getInstance().getMonthAndDay()).append(" ");
         msg.append(st.getSolar(null));
         JSONObject weatherJson = getWeatherJson(city);
         logger.info("查询 wthrcdn.etouch.cn 天气结果=" + weatherJson.toString());
@@ -59,18 +70,17 @@ public class MsgServiceImpl implements MsgService {
             if(StringUtils.isBlank(weatherJson.getStr("error"))){
                 msg.append(getDayWeather(weatherJson));
                 msg.append(getEnvironment(weatherJson));
-
-
+                msg.append(" ");
             }
         }
-        return null;
+        msg.append(getXianxing());
+        return msg.toString();
     }
 
     public JSONObject getWeatherJson(String city){
-        String url="http://wthrcdn.etouch.cn/WeatherApi";
         Map<String,Object> map = new HashMap<>();
         map.put("city",city);
-        String xml = HttpUtil.get(url,map,5000);
+        String xml = HttpUtil.get(weatherUrl,map,5000);
         JSONObject xmlJSONObj = XML.toJSONObject(xml);
         return xmlJSONObj;
     }
@@ -114,7 +124,7 @@ public class MsgServiceImpl implements MsgService {
      * @param dayJson
      * @return
      */
-    public static String getEnvironment(JSONObject dayJson){
+    public String getEnvironment(JSONObject dayJson){
         StringBuilder msg = new StringBuilder();
         JSONObject respObj = dayJson.getJSONObject("resp");
         if(respObj!=null){
@@ -126,6 +136,34 @@ public class MsgServiceImpl implements MsgService {
             String suggest = environmentObj.getStr("suggest");
             if(StringUtils.isNotBlank(suggest)){
                 msg.append(" 温馨提示:[").append(suggest).append("]");
+            }
+        }
+        return msg.toString();
+    }
+
+    /**
+     * 获取车辆限行
+     * @return
+     */
+    public String getXianxing(){
+        StringBuilder msg = new StringBuilder();
+        //时间解析
+        DateTime dateTime =new  DateTime();
+        msg.append(dateTime.toString("EE")).append(" 尾号限行：");        ;
+        HtmlUnitDriver driver = null;
+        try{
+            driver = new HtmlUnitDriver();
+            driver.setJavascriptEnabled(true);
+            driver.get(xianxingUrl);
+            WebElement webElement = driver.findElementById("todaynum");
+            if(webElement!=null){
+                msg.append(webElement.getText());
+            }
+        }catch (Exception e){
+          logger.error("获取尾号限行出错:",e);
+        }finally {
+            if(driver!=null){
+                driver.close();
             }
         }
         return msg.toString();
@@ -327,9 +365,32 @@ public class MsgServiceImpl implements MsgService {
 
 
 //        String html = HttpUtil.get("http://www.bjjtgl.gov.cn/");
-        String html = HttpUtil.get("http://www.bjjtgl.gov.cn/zhuanti/10weihao/index.html");
+//        String html = HttpUtil.get("http://www.bjjtgl.gov.cn/zhuanti/10weihao/index.html");
+        //String url = "http://www.bjjtgl.gov.cn";
 
-        System.out.println(html);
+        //设置必要参数
+//        DesiredCapabilities dcaps = new DesiredCapabilities();
+//        //ssl证书支持
+//        dcaps.setCapability("acceptSslCerts", true);
+//        //截屏支持
+//        dcaps.setCapability("takesScreenshot", true);
+//        //css搜索支持
+//        dcaps.setCapability("cssSelectorsEnabled", true);
+//        //js支持
+//        dcaps.setJavascriptEnabled(true);
+//        //驱动支持
+//        dcaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,"D:\\tools\\phantomjs-2.1.1-windows\\phantomjs.exe");
+//        //创建无界面浏览器对象
+//        PhantomJSDriver driver = new PhantomJSDriver(dcaps);
+
+
+//        HtmlUnitDriver driver = new HtmlUnitDriver();
+//        driver.setJavascriptEnabled(true);
+//        driver.get("http://www.bjjtgl.gov.cn");
+//        WebElement webElement = driver.findElementById("todaynum");
+//          String html = driver.getPageSource();
+
+//        System.out.println("htmlStr=" + getXianxing());
 
 
         //输出格式化后的json

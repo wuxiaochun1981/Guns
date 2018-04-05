@@ -6,7 +6,7 @@
 	<groupId>com.stylefeng.guns</groupId>
 	<artifactId>guns-rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>guns-rest</name>
 	<description>guns REST服务器</description>
@@ -44,6 +44,42 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>htmlunit-driver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.github.detro.ghostdriver</groupId>-->
+			<!--<artifactId>phantomjsdriver</artifactId>-->
+			<!--<version>1.1.0</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>com.codeborne</groupId>-->
+			<!--<artifactId>phantomjsdriver</artifactId>-->
+			<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.seleniumhq.selenium</groupId>-->
+			<!--<artifactId>selenium-api</artifactId>-->
+			<!--<version>2.53.1</version>-->
+		<!--</dependency>-->
+
 	</dependencies>
 
 	<build>

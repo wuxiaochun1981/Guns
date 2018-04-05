@@ -45,6 +45,11 @@
         <flowable.version>6.2.0</flowable.version>
         <hutool-all.version>4.0.7</hutool-all.version>
         <JSON-java.version>20180130</JSON-java.version>
+        <selenium-java.version>3.11.0</selenium-java.version>
+        <htmlunit-driver.version>2.29.0</htmlunit-driver.version>
+        <selenium-server.version>3.0.1</selenium-server.version>
+        <selenium-api.version>3.4.0</selenium-api.version>
+        <joda-time.version>2.9.9</joda-time.version>
     </properties>
 
     <dependencyManagement>
@@ -178,6 +183,31 @@
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${JSON-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>${selenium-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>htmlunit-driver</artifactId>
+                <version>${htmlunit-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-server</artifactId>
+                <version>${selenium-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-api</artifactId>
+                <version>${selenium-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
