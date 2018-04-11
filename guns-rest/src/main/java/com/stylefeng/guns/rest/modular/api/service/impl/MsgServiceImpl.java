@@ -1,6 +1,5 @@
 package com.stylefeng.guns.rest.modular.api.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -23,6 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * com.stylefeng.guns.rest.modular.api.service.impl
@@ -30,10 +32,10 @@ import java.util.Map;
  * <p>
  * Copyright: Copyright (c) 2018/3/21 17:32
  * <p>
- * Company: 京东
+ * Company:
  * <p>
  *
- * @author wuxiaochun@jd.com
+ * @author wuxiaochun
  * @version 1.0.0
  */
 @Service
@@ -42,12 +44,15 @@ public class MsgServiceImpl implements MsgService {
     /** 日志 */
     private static final Log logger = LogFactory.getLog(MsgServiceImpl.class);
 
+    /** 线程池 */
+    private final ExecutorService pool = newFixedThreadPool(10);
+
     @Autowired
     private SolarTerm st;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 
-    private String defaultCity = "北京";
+    private final String defaultCity = "北京";
 
     @Value("${api.weatherUrl}")
     private String weatherUrl;
@@ -55,25 +60,32 @@ public class MsgServiceImpl implements MsgService {
     @Value("${api.xianxingUrl}")
     private String xianxingUrl;
 
+    public MsgServiceImpl() {
+    }
+
     @Override
     public String getMsg(String city) {
         if(StringUtils.isBlank(city)){
             city = defaultCity;
         }
+        //时间解析
+        DateTime dateTime =new  DateTime();
+
         StringBuilder msg = new StringBuilder();
-        msg.append(sdf.format(new Date())).append(" ");
-        msg.append("农历 ").append(LunarCalendar.getInstance().getMonthAndDay()).append(" ");
-        msg.append(st.getSolar(null));
+        msg.append("今天是").append(sdf.format(new Date())).append("，");
+        msg.append(dateTime.toString("EE")).append("，");
+        msg.append("农历").append(LunarCalendar.getInstance().getMonthAndDay());
+        msg.append(st.getSolar(null)).append("。");
         JSONObject weatherJson = getWeatherJson(city);
         logger.info("查询 wthrcdn.etouch.cn 天气结果=" + weatherJson.toString());
         if(weatherJson.getJSONObject("resp")!= null){
             if(StringUtils.isBlank(weatherJson.getStr("error"))){
                 msg.append(getDayWeather(weatherJson));
                 msg.append(getEnvironment(weatherJson));
-                msg.append(" ");
             }
         }
         msg.append(getXianxing());
+        msg.append(" ").append("大家早上好");
         return msg.toString();
     }
 
@@ -103,13 +115,13 @@ public class MsgServiceImpl implements MsgService {
                         JSONObject dayObj = weatherObj.getJSONObject("day");
                         String type = dayObj.getStr("type");
                         String high = StringUtils.replaceAll(weatherObj.getStr("high"),"高温 ","最高气温");
-                        msg.append("今天白天 ").append(type).append(" ").append(dayObj.getStr("fengxiang")).append(dayObj.getStr("fengli")).append(",");
+                        msg.append("白天").append(type).append("，").append(dayObj.getStr("fengxiang")).append(dayObj.getStr("fengli")).append(",");
                         msg.append(high).append(";");
 
                         JSONObject nightObj = weatherObj.getJSONObject("night");
                         type = nightObj.getStr("type");
                         String low = StringUtils.replaceAll(weatherObj.getStr("low"),"低温 ","最低气温");
-                        msg.append("夜间 ").append(type).append(" ").append(nightObj.getStr("fengxiang")).append(nightObj.getStr("fengli")).append(",");
+                        msg.append("夜间").append(type).append("，").append(nightObj.getStr("fengxiang")).append(nightObj.getStr("fengli")).append(",");
                         msg.append(low).append(";");
 
                     }
@@ -131,11 +143,11 @@ public class MsgServiceImpl implements MsgService {
            String shidu = respObj.getStr("shidu");
            JSONObject environmentObj = respObj.getJSONObject("environment");
 
-            msg.append("湿度:").append(shidu).append(" pm25: ").append(environmentObj.getStr("pm25"))
+            msg.append("湿度:").append(shidu).append("，pm2.5数值: ").append(environmentObj.getStr("pm25"))
                .append("(").append(environmentObj.getStr("quality")).append(")");
             String suggest = environmentObj.getStr("suggest");
             if(StringUtils.isNotBlank(suggest)){
-                msg.append(" 温馨提示:[").append(suggest).append("]");
+                msg.append(" 温馨提示:").append(suggest).append("。");
             }
         }
         return msg.toString();
@@ -147,9 +159,8 @@ public class MsgServiceImpl implements MsgService {
      */
     public String getXianxing(){
         StringBuilder msg = new StringBuilder();
-        //时间解析
-        DateTime dateTime =new  DateTime();
-        msg.append(dateTime.toString("EE")).append(" 尾号限行：");        ;
+
+        msg.append("尾号限行：");
         HtmlUnitDriver driver = null;
         try{
             driver = new HtmlUnitDriver();

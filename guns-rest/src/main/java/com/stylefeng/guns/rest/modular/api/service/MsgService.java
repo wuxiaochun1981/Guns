@@ -6,10 +6,10 @@ package com.stylefeng.guns.rest.modular.api.service;
  * <p>
  * Copyright: Copyright (c) 2018/3/21 17:31
  * <p>
- * Company: 京东
+ * Company:
  * <p>
  *
- * @author wuxiaochun@jd.com
+ * @author wuxiaochun
  * @version 1.0.0
  */
 public interface MsgService {
