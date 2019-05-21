@@ -3,9 +3,11 @@ package com.stylefeng.guns.rest.modular.api.service.impl;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.json.XML;
 import com.stylefeng.guns.rest.common.util.LunarCalendar;
 import com.stylefeng.guns.rest.common.util.SolarTerm;
+import com.stylefeng.guns.rest.common.util.TimeUtil;
 import com.stylefeng.guns.rest.modular.api.service.MsgService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -60,6 +62,9 @@ public class MsgServiceImpl implements MsgService {
     @Value("${api.xianxingUrl}")
     private String xianxingUrl;
 
+    @Value("${api.pmUrl}")
+    private String pmUrl;
+
     public MsgServiceImpl() {
     }
 
@@ -78,14 +83,19 @@ public class MsgServiceImpl implements MsgService {
         msg.append(st.getSolar(null)).append("。");
         JSONObject weatherJson = getWeatherJson(city);
         logger.info("查询 wthrcdn.etouch.cn 天气结果=" + weatherJson.toString());
+        JSONObject pmJson = getPmJson();
+        logger.info("查询空气结果:" + pmJson);
+
+
         if(weatherJson.getJSONObject("resp")!= null){
             if(StringUtils.isBlank(weatherJson.getStr("error"))){
                 msg.append(getDayWeather(weatherJson));
                 msg.append(getEnvironment(weatherJson));
+                msg.append(getPm(pmJson));
             }
         }
         msg.append(getXianxing());
-        msg.append(" ").append("大家早上好");
+        msg.append(" ").append(TimeUtil.getTimeName()).append("好");
         return msg.toString();
     }
 
@@ -94,6 +104,19 @@ public class MsgServiceImpl implements MsgService {
         map.put("city",city);
         String xml = HttpUtil.get(weatherUrl,map,5000);
         JSONObject xmlJSONObj = XML.toJSONObject(xml);
+        return xmlJSONObj;
+    }
+
+
+    public JSONObject getPmJson(){
+        Map<String,Object> map = new HashMap<>();
+        map.put("app","weather.pm25");
+        map.put("weaid","1");
+        map.put("appkey","10003");
+        map.put("sign","b59bc3ef6191eb9f747dd4e83c99f2a4");
+        map.put("format","json");
+        String jsonStr = HttpUtil.get(pmUrl,map,10000);
+        JSONObject xmlJSONObj = JSONUtil.parseObj(jsonStr);
         return xmlJSONObj;
     }
 
@@ -143,9 +166,32 @@ public class MsgServiceImpl implements MsgService {
            String shidu = respObj.getStr("shidu");
            JSONObject environmentObj = respObj.getJSONObject("environment");
 
-            msg.append("湿度:").append(shidu).append("，pm2.5数值: ").append(environmentObj.getStr("pm25"))
-               .append("(").append(environmentObj.getStr("quality")).append(")");
-            String suggest = environmentObj.getStr("suggest");
+
+            msg.append("湿度:").append(shidu);
+//            msg.append("湿度:").append(shidu).append("，pm2.5数值: ").append(environmentObj.getStr("pm25"))
+//               .append("(").append(environmentObj.getStr("quality")).append(")");
+
+//            String suggest = environmentObj.getStr("suggest");
+//            if(StringUtils.isNotBlank(suggest)){
+//                msg.append(" 温馨提示:").append(suggest).append("。");
+//            }
+        }
+        return msg.toString();
+    }
+
+    /**
+     * 获取pm2.5
+     * @return
+     */
+    public String getPm(JSONObject pmJson){
+        StringBuilder msg = new StringBuilder();
+        String success = pmJson.getStr("success");
+        if(StringUtils.equals(success,"1")){
+            JSONObject resultObj = pmJson.getJSONObject("result");
+
+            msg.append("，pm2.5数值: ").append(resultObj.getStr("aqi"))
+                    .append("(").append(resultObj.getStr("aqi_levnm")).append(")");
+            String suggest = resultObj.getStr("aqi_remark");
             if(StringUtils.isNotBlank(suggest)){
                 msg.append(" 温馨提示:").append(suggest).append("。");
             }
@@ -395,10 +441,14 @@ public class MsgServiceImpl implements MsgService {
 //        PhantomJSDriver driver = new PhantomJSDriver(dcaps);
 
 
-//        HtmlUnitDriver driver = new HtmlUnitDriver();
-//        driver.setJavascriptEnabled(true);
-//        driver.get("http://www.bjjtgl.gov.cn");
-//        WebElement webElement = driver.findElementById("todaynum");
+        HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setJavascriptEnabled(true);
+        driver.get("http://jtgl.beijing.gov.cn");
+        WebElement webElement = driver.findElementById("todaynum");
+        if(webElement!=null){
+            System.out.println("结果" + webElement.getText());
+        }
+        ;
 //          String html = driver.getPageSource();
 
 //        System.out.println("htmlStr=" + getXianxing());
